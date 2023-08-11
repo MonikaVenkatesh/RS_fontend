@@ -1,0 +1,38 @@
+.header{
+    background-color: black;
+    padding: 30px;
+    color: white;
+}
+
+
+
+.navbar{
+    padding-left: 75px;
+    padding-top:58px;
+    color: white;
+}
+
+li
+{
+    list-style-type:none;
+    
+}
+
+.infoheader{
+    height: 40px;
+}
+.a{
+    padding-right: 3%;
+    color: white;
+}
+
+.logo{
+    height: 150px;
+    width: 270px;
+    padding-left: 120px;
+}
+
+.search{
+    padding-top: 95px;
+}
+

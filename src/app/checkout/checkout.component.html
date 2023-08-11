@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Contact Us</title>
+	 
+<link href="https://fonts.googleapis.com/css2?family=Jost:wght@500&display=swap" rel="stylesheet">
+</head>
+<body>
+	<div class="main">  	
+        <div class="signup">
+				<form>
+					<label for="chk" aria-hidden="true">Contact Us</label>
+					<input type="text" name="txt" placeholder="User name" [(ngModel)] ="checkoutObj.mobphno">
+					<input type="text" name="txt" placeholder="User name" [(ngModel)] ="checkoutObj.userName">
+					<input type="password" name="pswd" placeholder="Password" [(ngModel)] ="checkoutObj.addrl1">
+					<input type="email" name="email" placeholder="Email" [(ngModel)] ="checkoutObj.addrl2">
+					<input type="password" name="pswd" placeholder="Password" [(ngModel)] ="checkoutObj.city">
+					<input type="password" name="pswd" placeholder="Password" [(ngModel)] ="checkoutObj.state">
+					<input type="password" name="pswd" placeholder="Password" [(ngModel)] ="checkoutObj.pin">
+					<input type="email" name="email" placeholder="Email" [(ngModel)] ="checkoutObj.email">
+					<button (click) = "onCheckout()">Send</button>
+				</form>
+			</div>
+
+			
+	</div>
+
+	<div class="main1">  	
+        
+		<input type="checkbox" id="chk" aria-hidden="true">
+
+			<div class="con1">
+				<h1><b>Locate Us</b></h1>
+				<h2>No 53, Vedachalam Aparts
+					River view Lane, Kotturpuram, Chennai Tamilnadu,India, 600085</h2>
+			</div>
+
+			
+	</div>
+
+	<div class="main2">  	
+        
+		<input type="checkbox" id="chk" aria-hidden="true">
+
+			<div class="con2">
+				<h1><b>Call Us</b></h1>
+					<h3>We are a ring away</h3>
+				<h2>+9865288018</h2>
+			</div>
+
+			
+	</div>
+</body>
+</html>

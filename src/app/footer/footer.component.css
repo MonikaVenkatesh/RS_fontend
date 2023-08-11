@@ -1,0 +1,118 @@
+.footer{
+    background-color: black;
+    padding: 30px;
+    color: white;
+}
+ul
+{
+    list-style-type:none;
+    
+}
+.navbar{
+   
+    padding-left: 20px;
+    padding-top:58px;
+    color: white;
+    
+}
+
+.navbar1{
+  
+    padding-left: 20px;
+    padding-top:58px;
+    color: white;
+    
+}
+
+.infoheader{
+    height: 40px;
+}
+.a{
+    padding-right: 3%;
+    color: white;
+}
+
+.logo{
+    height: 150px;
+    width: 270px;
+    padding-left: 120px;
+}
+
+.search{
+    padding-top: 95px;
+}
+
+.main1 {
+     justify-content: center;
+    position: absolute;
+	top: 1580px; left :500px;
+    color: white;
+}
+	/*width: 500px;
+	height: 200px;*/
+	/*position: absolute;
+	top: 1400px; left :900px;
+}*/
+	/*background: red;
+	overflow: hidden;
+	/*background: url("https://doc-08-2c-docs.googleusercontent.com/docs/securesc/68c90smiglihng9534mvqmq1946dmis5/fo0picsp1nhiucmc0l25s29respgpr4j/1631524275000/03522360960922298374/03522360960922298374/1Sx0jhdpEpnNIydS4rnN4kHSJtU1EyWka?e=view&authuser=0&nonce=gcrocepgbb17m&user=03522360960922298374&hash=tfhgbs86ka6divo3llbvp93mg4csvb38") no-repeat center/ cover;
+	border-radius: 10px;
+	box-shadow: 5px 20px 50px #000;
+}
+
+/*.main h2{
+	width: 500px;
+	height: 200px;
+	position: absolute;
+	top: 1500px; left :500px;
+	background: red;
+	overflow: hidden;
+	background: url("https://doc-08-2c-docs.googleusercontent.com/docs/securesc/68c90smiglihng9534mvqmq1946dmis5/fo0picsp1nhiucmc0l25s29respgpr4j/1631524275000/03522360960922298374/03522360960922298374/1Sx0jhdpEpnNIydS4rnN4kHSJtU1EyWka?e=view&authuser=0&nonce=gcrocepgbb17m&user=03522360960922298374&hash=tfhgbs86ka6divo3llbvp93mg4csvb38") no-repeat center/ cover;
+	border-radius: 10px;
+	box-shadow: 5px 20px 50px #000;
+}
+*/
+
+.subscribe{
+	
+    justify-content: center;
+    position: absolute;
+	top: 1500px; left :500px;
+    
+    
+	
+}
+
+/*.subscribe h1{
+	width:100%;
+	height: 100%;
+    
+    position: absolute;
+	top: 1440px; left :700px;
+    
+	
+}*/
+
+input{
+	width: 100%;
+	height: 30px;
+	background: #f3efef;
+    justify-content: center;
+	display: flex;
+	margin: 20px auto;
+	padding: 10px;
+	border: none;
+	outline: none;
+	border-radius: 5px;
+    color: black;
+}
+
+/*.cp1{
+	position: absolute;
+	
+	left: 700px;
+    
+		
+	  }*/
+	
+
