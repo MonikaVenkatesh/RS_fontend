@@ -2,53 +2,52 @@
 <html>
 <head>
 	<title>Contact Us</title>
-	 
-<link href="https://fonts.googleapis.com/css2?family=Jost:wght@500&display=swap" rel="stylesheet">
+	 <link href="https://fonts.googleapis.com/css2?family=Jost:wght@500&display=swap" rel="stylesheet">
 </head>
-<body>
-	<div class="main">  	
-        <div class="signup">
+
+<div class="cd1">
+	
+	<div class="cd">
+			<div class = "main">
+            
+			<img src="../assets/The Resin Street Logo.png" id="banner-logo" alt="logo" class="logo"/>
+		</div>
+		
+			<div class="signup" style="padding-top: 17%; padding-left: 20px;">
 				<form>
-					<label for="chk" aria-hidden="true">Contact Us</label>
-					<input type="text" name="txt" placeholder="User name" [(ngModel)] ="checkoutObj.mobphno">
-					<input type="text" name="txt" placeholder="User name" [(ngModel)] ="checkoutObj.userName">
-					<input type="password" name="pswd" placeholder="Password" [(ngModel)] ="checkoutObj.addrl1">
-					<input type="email" name="email" placeholder="Email" [(ngModel)] ="checkoutObj.addrl2">
-					<input type="password" name="pswd" placeholder="Password" [(ngModel)] ="checkoutObj.city">
-					<input type="password" name="pswd" placeholder="Password" [(ngModel)] ="checkoutObj.state">
-					<input type="password" name="pswd" placeholder="Password" [(ngModel)] ="checkoutObj.pin">
-					<input type="email" name="email" placeholder="Email" [(ngModel)] ="checkoutObj.email">
-					<button (click) = "onCheckout()">Send</button>
+					<h3>Contact</h3>
+					<input type="text" name="txt" placeholder="Mobile Number" [(ngModel)] ="checkoutObj.mobphno">
+					<h3>Shipping Address</h3>
+					<input type="text" name="txt" placeholder="User name" [(ngModel)] ="checkoutObj.userName"><br>
+					<input type="password" name="pswd" placeholder="Address Line 1" [(ngModel)] ="checkoutObj.addrl1"><br>
+					<input type="password" name="pswd" placeholder="Address Line 2" [(ngModel)] ="checkoutObj.addrl2"><br>
+
+					<input type="password" name="pswd" placeholder="City" [(ngModel)] ="checkoutObj.city"><br>
+					<input type="password" name="pswd" placeholder="State" [(ngModel)] ="checkoutObj.state"><br>
+
+					<input type="password" name="pswd" placeholder="Pin Code" [(ngModel)] ="checkoutObj.pin"><br>
+					<input type="email" name="email" placeholder="Email" [(ngModel)] ="checkoutObj.email"><br><br>
+					<button (click) = "onCheckout()">Continue To shopping</button>
 				</form>
 			</div>
+	
+		
+</div>
 
-			
-	</div>
+	
 
-	<div class="main1">  	
-        
-		<input type="checkbox" id="chk" aria-hidden="true">
+	
+<div class="vl"></div>
+		
 
-			<div class="con1">
-				<h1><b>Locate Us</b></h1>
-				<h2>No 53, Vedachalam Aparts
-					River view Lane, Kotturpuram, Chennai Tamilnadu,India, 600085</h2>
-			</div>
+		<div class="main1">
+			<h1><b></b></h1>
+			<h2></h2>
+		</div>
 
-			
-	</div>
+	
 
-	<div class="main2">  	
-        
-		<input type="checkbox" id="chk" aria-hidden="true">
+</div>
+	
 
-			<div class="con2">
-				<h1><b>Call Us</b></h1>
-					<h3>We are a ring away</h3>
-				<h2>+9865288018</h2>
-			</div>
-
-			
-	</div>
-</body>
 </html>

@@ -15,37 +15,51 @@ body{
 	width: 600px;
 	height: 500px;
 	position: absolute;
-	top: 20px; left :75px;
+	top: 10%; left :15%;
 	background: red;
 	overflow: hidden;
 	background: url("https://doc-08-2c-docs.googleusercontent.com/docs/securesc/68c90smiglihng9534mvqmq1946dmis5/fo0picsp1nhiucmc0l25s29respgpr4j/1631524275000/03522360960922298374/03522360960922298374/1Sx0jhdpEpnNIydS4rnN4kHSJtU1EyWka?e=view&authuser=0&nonce=gcrocepgbb17m&user=03522360960922298374&hash=tfhgbs86ka6divo3llbvp93mg4csvb38") no-repeat center/ cover;
 	border-radius: 10px;
-	box-shadow: 5px 20px 50px #000;
+	box-shadow: 5px 20px 50px #f0eeee;
 }
 
 .main1{
-	width: 500px;
-	height: 200px;
+	width: 100%;
+	height: 20%;
 	position: absolute;
-	top: 20px; left :800px;
+	top: 10%; left :180%;
 	background: red;
 	overflow: hidden;
 	background: url("https://doc-08-2c-docs.googleusercontent.com/docs/securesc/68c90smiglihng9534mvqmq1946dmis5/fo0picsp1nhiucmc0l25s29respgpr4j/1631524275000/03522360960922298374/03522360960922298374/1Sx0jhdpEpnNIydS4rnN4kHSJtU1EyWka?e=view&authuser=0&nonce=gcrocepgbb17m&user=03522360960922298374&hash=tfhgbs86ka6divo3llbvp93mg4csvb38") no-repeat center/ cover;
 	border-radius: 10px;
-	box-shadow: 5px 20px 50px #000;
+	box-shadow: 5px 20px 50px #ece8e8;
 }
 
 .main2{
-	width: 500px;
-	height: 200px;
+	width: 100%;
+	height: 20%;
 	position: absolute;
-	top: 300px; left :800px;
+	top: 70%; left :180%;
 	background: red;
 	overflow: hidden;
 	background: url("https://doc-08-2c-docs.googleusercontent.com/docs/securesc/68c90smiglihng9534mvqmq1946dmis5/fo0picsp1nhiucmc0l25s29respgpr4j/1631524275000/03522360960922298374/03522360960922298374/1Sx0jhdpEpnNIydS4rnN4kHSJtU1EyWka?e=view&authuser=0&nonce=gcrocepgbb17m&user=03522360960922298374&hash=tfhgbs86ka6divo3llbvp93mg4csvb38") no-repeat center/ cover;
 	border-radius: 10px;
-	box-shadow: 5px 20px 50px #000;
+	box-shadow: 5px 20px 50px #eeebeb;
 }
+
+.main3{
+	width: 100%;
+	height: 20%;
+	position: absolute;
+	top: 40%; left :180%;
+	background: red;
+	overflow: hidden;
+	background: url("https://doc-08-2c-docs.googleusercontent.com/docs/securesc/68c90smiglihng9534mvqmq1946dmis5/fo0picsp1nhiucmc0l25s29respgpr4j/1631524275000/03522360960922298374/03522360960922298374/1Sx0jhdpEpnNIydS4rnN4kHSJtU1EyWka?e=view&authuser=0&nonce=gcrocepgbb17m&user=03522360960922298374&hash=tfhgbs86ka6divo3llbvp93mg4csvb38") no-repeat center/ cover;
+	border-radius: 10px;
+	box-shadow: 5px 20px 50px #e6e3e3;
+}
+
+
 #chk{
 	display: none;
 }
@@ -97,50 +111,11 @@ button:hover{
 	background: #070707;
 }
 
-h1{
-	width: 50%;
-	height: 40px;
-	background: #e0dede;
-	justify-content: center;
-	position: absolute;
-	top: 0px; left :100px;
-	display: flex;
-	margin: 20px auto;
-	padding: 10px;
-	border: none;
-	outline: none;
-	border-radius: 5px;
+.c1{
+	padding-left :200%;
 }
 
-h2{
-	width: 50%;
-	height: 30px;
-	font-size: medium;
-justify-content: center;
-	position: absolute;
-	top: 100px; left :100px;
-	display: flex;
-	margin: 20px auto;
-	padding: 10px;
-	border: none;
-	outline: none;
-	border-radius: 5px;
-}
 
-h3{
-	width: 50%;
-	height: 30px;
-	font-size: small;
-justify-content: center;
-	position: absolute;
-	top: 50px; left :75px;
-	display: flex;
-	margin: 20px auto;
-	padding: 10px;
-	border: none;
-	outline: none;
-	border-radius: 5px;
-}
 
 
 #chk:checked ~ .login{

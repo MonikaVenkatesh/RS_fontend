@@ -2,18 +2,38 @@
     background-color: black;
     padding: 30px;
     color: white;
+	height: 90%; width: 100%
 }
+
+#chk{
+	display: none;
+}
+
 ul
 {
     list-style-type:none;
     
 }
-.navbar{
+.container{
    
-    padding-left: 20px;
-    padding-top:58px;
+    padding-left: 5%;
+    padding-top:2%;
     color: white;
+	font-size: small;
     
+}
+
+.container1{
+   
+    padding-left: 5%;
+    padding-top:2%;
+    color: white;
+	font-size: small;
+    
+}
+
+.container h3{
+	text-align: center;
 }
 
 .navbar1{
@@ -45,7 +65,7 @@ ul
 .main1 {
      justify-content: center;
     position: absolute;
-	top: 1580px; left :500px;
+	top: 1000px; left :500px;
     color: white;
 }
 	/*width: 500px;
@@ -76,8 +96,6 @@ ul
 .subscribe{
 	
     justify-content: center;
-    position: absolute;
-	top: 1500px; left :500px;
     
     
 	
@@ -94,10 +112,11 @@ ul
 }*/
 
 input{
-	width: 100%;
+	justify-content: center;
+	
+	width: 20%;
 	height: 30px;
 	background: #f3efef;
-    justify-content: center;
 	display: flex;
 	margin: 20px auto;
 	padding: 10px;
@@ -107,12 +126,41 @@ input{
     color: black;
 }
 
-/*.cp1{
-	position: absolute;
-	
-	left: 700px;
-    
-		
-	  }*/
+
+
+
+  
+
+
+
+button{
+	position: relative;
+     
+	width: 10%;
+		height: 30px;
+		margin: 10px auto;
+		justify-content: center;
+		display: block;
+		color: #1d1b1b;
+		background: #e7dcdc;
+		font-size: 1em;
+		font-weight: bold;
+		margin-top: 20px;
+		outline: none;
+		border: none;
+		border-radius: 5px;
+		transition: .2s ease-in;
+		cursor: pointer;
+	}
+button:hover{
+		background: #d6d3d3;
+	}
+
+.cp1{
+	padding-left: 970px;
+	padding-top:1px;
+}
+   
+	  
 	
 

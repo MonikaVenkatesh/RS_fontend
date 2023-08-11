@@ -29,13 +29,8 @@ export class SignupComponent {
   }
 
   onSignUp() {
-    this.signupUsers.push(this.signupObj);
-    localStorage.setItem('signupUsers', JSON.stringify(this.signupUsers));
-    this.signupObj= {
-      userName: '',
-      email: '',
-      password:''
-    };
+    
+  
 
   }
 
