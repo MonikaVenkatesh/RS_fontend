@@ -1,3 +1,52 @@
+
+
+import { Component } from '@angular/core';
+import { FileService } from './file.service';
+import * as XLSX from 'xlsx';
+import * as FileSaver from 'file-saver';
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css'],
+})
+export class AppComponent {
+  constructor(private fileService: FileService) {}
+
+  downloadAndConvertFile() {
+    this.fileService.downloadFile('your-api-endpoint').subscribe((blob: Blob) => {
+      const reader = new FileReader();
+      reader.onload = (event: any) => {
+        const data = JSON.parse(event.target.result);
+        const worksheet = XLSX.utils.json_to_sheet(data);
+        const workbook = { Sheets: { data: worksheet }, SheetNames: ['data'] };
+        const xlsxBlob = this.workbookToBlob(workbook);
+
+        FileSaver.saveAs(xlsxBlob, 'data.xlsx');
+      };
+      reader.readAsText(blob);
+    });
+  }
+
+  workbookToBlob(workbook: XLSX.WorkBook): Blob {
+    const wopts: XLSX.WritingOptions = { bookType: 'xlsx', type: 'binary' };
+    const wbout = XLSX.write(workbook, wopts);
+
+    function s2ab(s: string): ArrayBuffer {
+      const buf = new ArrayBuffer(s.length);
+      const view = new Uint8Array(buf);
+      for (let i = 0; i < s.length; i++) view[i] = s.charCodeAt(i) & 0xFF;
+      return buf;
+    }
+
+    return new Blob([s2ab(wbout)], { type: 'application/octet-stream' });
+  }
+}
+
+
+
+
+
 # Project
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 16.1.6.
