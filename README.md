@@ -1,48 +1,50 @@
 
 
-import { Component } from '@angular/core';
-import { FileService } from './file.service';
-import * as XLSX from 'xlsx';
-import * as FileSaver from 'file-saver';
+import java.io.IOException;
+import java.util.List;
 
-@Component({
-  selector: 'app-root',
-  templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css'],
-})
-export class AppComponent {
-  constructor(private fileService: FileService) {}
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
-  downloadAndConvertFile() {
-    this.fileService.downloadFile('your-api-endpoint').subscribe((blob: Blob) => {
-      const reader = new FileReader();
-      reader.onload = (event: any) => {
-        const data = JSON.parse(event.target.result);
-        const worksheet = XLSX.utils.json_to_sheet(data);
-        const workbook = { Sheets: { data: worksheet }, SheetNames: ['data'] };
-        const xlsxBlob = this.workbookToBlob(workbook);
+@RestController
+public class FileController {
 
-        FileSaver.saveAs(xlsxBlob, 'data.xlsx');
-      };
-      reader.readAsText(blob);
-    });
-  }
+    @Autowired
+    private WidFileService widFileService;
 
-  workbookToBlob(workbook: XLSX.WorkBook): Blob {
-    const wopts: XLSX.WritingOptions = { bookType: 'xlsx', type: 'binary' };
-    const wbout = XLSX.write(workbook, wopts);
+    @Autowired
+    private ExcelService excelService;
 
-    function s2ab(s: string): ArrayBuffer {
-      const buf = new ArrayBuffer(s.length);
-      const view = new Uint8Array(buf);
-      for (let i = 0; i < s.length; i++) view[i] = s.charCodeAt(i) & 0xFF;
-      return buf;
+    @GetMapping("/download-excel")
+    public ResponseEntity<byte[]> downloadExcel(@RequestHeader("Authorization") String token, 
+                                                @RequestParam String filePath) throws IOException {
+        // Hard-coded token validation
+        if (!"hard-coded-token".equals(token)) {
+            return ResponseEntity.status(403).build();
+        }
+
+        // Read the .wid file
+        List<String> data = widFileService.readWidFile(filePath);
+
+        // Convert data to Excel
+        byte[] excelBytes = excelService.createExcel(data);
+
+        // Return the Excel file as a response
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+        headers.setContentDispositionFormData("attachment", "data.xlsx");
+
+        return ResponseEntity.ok()
+                .headers(headers)
+                .body(excelBytes);
     }
-
-    return new Blob([s2ab(wbout)], { type: 'application/octet-stream' });
-  }
 }
-
 
 
 
