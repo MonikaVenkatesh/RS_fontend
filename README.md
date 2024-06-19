@@ -1,3 +1,101 @@
+ChatGPT
+
+Convert and download wid file into Excel file from json response with hard-coded headers and token in spring boot
+
+ChatGPT
+To convert and download a .wid file into an Excel file using a JSON response with hard-coded headers and token in a Spring Boot application, you can follow these steps:
+
+Define the JSON Structure and Headers: Assume you have a JSON response with a specific structure and you need to read the .wid file contents.
+
+Read the .wid File: Implement logic to read and parse the .wid file contents.
+
+Convert the Data to Excel: Use Apache POI library to write the parsed data into an Excel file.
+
+Provide Download Functionality: Implement a Spring Boot controller endpoint to handle file download requests.
+
+Here's an example implementation:
+
+Step 1: Add Dependencies
+Ensure you have the required dependencies in your pom.xml:
+
+xml
+Copy code
+<dependencies>
+    <!-- Spring Boot Starter Web -->
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-web</artifactId>
+    </dependency>
+    <!-- Apache POI for Excel processing -->
+    <dependency>
+        <groupId>org.apache.poi</groupId>
+        <artifactId>poi-ooxml</artifactId>
+        <version>5.2.3</version>
+    </dependency>
+    <!-- Lombok for boilerplate code reduction (optional) -->
+    <dependency>
+        <groupId>org.projectlombok</groupId>
+        <artifactId>lombok</artifactId>
+        <optional>true</optional>
+    </dependency>
+</dependencies>
+Step 2: Read and Parse .wid File
+Assuming .wid is a simple text file, create a service to read it:
+
+java
+Copy code
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.List;
+
+import org.springframework.stereotype.Service;
+
+@Service
+public class WidFileService {
+    public List<String> readWidFile(String filePath) throws IOException {
+        Path path = Paths.get(filePath);
+        return Files.readAllLines(path);
+    }
+}
+Step 3: Convert Data to Excel
+Create a service to handle Excel conversion:
+
+java
+Copy code
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.util.List;
+
+import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.springframework.stereotype.Service;
+
+@Service
+public class ExcelService {
+    public byte[] createExcel(List<String> data) throws IOException {
+        try (Workbook workbook = new XSSFWorkbook(); ByteArrayOutputStream bos = new ByteArrayOutputStream()) {
+            Sheet sheet = workbook.createSheet("Data");
+            int rowCount = 0;
+            for (String line : data) {
+                Row row = sheet.createRow(rowCount++);
+                String[] values = line.split(","); // Assuming comma-separated values
+                int colCount = 0;
+                for (String value : values) {
+                    Cell cell = row.createCell(colCount++);
+                    cell.setCellValue(value);
+                }
+            }
+            workbook.write(bos);
+            return bos.toByteArray();
+        }
+    }
+}
+
+
+
+
 
 
 import java.io.IOException;
