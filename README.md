@@ -1,5 +1,95 @@
 ChatGPT
 
+
+import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.List;
+
+@RestController
+@RequestMapping("/api")
+public class ReportController {
+
+    @Autowired
+    private RestTemplate restTemplate;
+
+    @GetMapping("/reports")
+    public List<Report> getReports() {
+        // Return list of reports from your data source
+        // This is just a placeholder
+        return List.of(new Report(1, "Report 1"), new Report(2, "Report 2"));
+    }
+
+    @GetMapping("/download/{fileId}")
+    public ResponseEntity<byte[]> downloadFile(@PathVariable String fileId) throws IOException {
+        // Hard-coded token validation
+        String token = "hard-coded-token";
+
+        // Fetch the .wid file from external API
+        Path widFilePath = fetchWidFile(fileId, token);
+
+        // Convert data to Excel
+        byte[] excelBytes = createExcel(widFilePath);
+
+        // Return the Excel file as a response
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+        headers.setContentDispositionFormData("attachment", "report.xlsx");
+
+        return ResponseEntity.ok()
+                .headers(headers)
+                .body(excelBytes);
+    }
+
+    private Path fetchWidFile(String fileId, String token) throws IOException {
+        String url = "http://external-api-url/" + fileId;
+        ResponseEntity<byte[]> response = restTemplate.getForEntity(url, byte[].class);
+
+        Path tempFile = Files.createTempFile("data", ".wid");
+        Files.write(tempFile, response.getBody());
+        return tempFile;
+    }
+
+    private byte[] createExcel(Path widFilePath) throws IOException {
+        List<String> data = Files.readAllLines(widFilePath);
+
+        try (Workbook workbook = new XSSFWorkbook(); ByteArrayOutputStream bos = new ByteArrayOutputStream()) {
+            Sheet sheet = workbook.createSheet("Data");
+            int rowCount = 0;
+            for (String line : data) {
+                Row row = sheet.createRow(rowCount++);
+                String[] values = line.split(","); // Assuming comma-separated values
+                int colCount = 0;
+                for (String value : values) {
+                    Cell cell = row.createCell(colCount++);
+                    cell.setCellValue(value);
+                }
+            }
+            workbook.write(bos);
+            return bos.toByteArray();
+        }
+    }
+}
+
+
+
+🙏🙏🙏🙏🙏🙏
+
+
+
+
+
 // report.component.ts
 import { Component, OnInit } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
