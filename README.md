@@ -1,5 +1,73 @@
 ChatGPT
 
+// report.component.ts
+import { Component, OnInit } from '@angular/core';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+
+@Component({
+  selector: 'app-report',
+  templateUrl: './report.component.html',
+  styleUrls: ['./report.component.css']
+})
+export class ReportComponent implements OnInit {
+  columnDefs = [
+    { headerName: 'ID', field: 'id' },
+    { headerName: 'Name', field: 'name' },
+    {
+      headerName: 'Actions',
+      field: 'id',
+      cellRenderer: (params) => {
+        return `<a href="javascript:void(0);" onclick="downloadFile('${params.value}')">Download</a>`;
+      }
+    }
+  ];
+
+  rowData: any;
+
+  constructor(private http: HttpClient) { }
+
+  ngOnInit(): void {
+    this.http.get('http://your-backend-api/reports', {
+      headers: new HttpHeaders({
+        'Authorization': 'Bearer hard-coded-token'
+      })
+    }).subscribe(data => {
+      this.rowData = data;
+    });
+  }
+}
+
+declare global {
+  interface Window { downloadFile: any; }
+}
+
+window.downloadFile = (fileId) => {
+  fetch(`http://your-backend-api/download/${fileId}`, {
+    method: 'GET',
+    headers: {
+      'Authorization': 'Bearer hard-coded-token'
+    }
+  })
+  .then(response => response.blob())
+  .then(blob => {
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'report.xlsx';
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+  });
+};
+
+
+
+
+
+
+
+🤭🤭🤭
+
 Convert and download wid file into Excel file from json response with hard-coded headers and token in spring boot
 
 ChatGPT
