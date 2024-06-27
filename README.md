@@ -1,4 +1,272 @@
-ChatGPT
+----------------------frontend----------------
+import { Component } from '@angular/core';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+
+@Component({
+  selector: 'app-root',
+  template: `
+    <ag-grid-angular
+      style="width: 100%; height: 500px;"
+      class="ag-theme-alpine"
+      [rowData]="rowData"
+      [columnDefs]="columnDefs"
+      (gridReady)="onGridReady($event)">
+    </ag-grid-angular>
+  `
+})
+export class AppComponent {
+  columnDefs = [
+    { headerName: 'ID', field: 'id' },
+    { headerName: 'Name', field: 'name' },
+    {
+      headerName: 'Action',
+      field: 'action',
+      cellRenderer: (params) => {
+        const link = document.createElement('a');
+        link.innerText = 'Fetch Report';
+        link.href = '#';
+        link.addEventListener('click', () => this.fetchReport(params.data.id));
+        return link;
+      }
+    }
+  ];
+
+  rowData = [
+    { id: 1, name: 'Report 1' },
+    { id: 2, name: 'Report 2' }
+  ];
+
+  constructor(private http: HttpClient) {}
+
+  onGridReady(params) {
+    params.api.sizeColumnsToFit();
+  }
+
+  fetchReport(reportId: number) {
+    const headers = new HttpHeaders({
+      'Authorization': 'hard-coded-token'
+    });
+
+    this.http.get(`http://localhost:8080/fetch-wid-file/${reportId}`, { headers, responseType: 'blob' }).subscribe(blob => {
+      const formData = new FormData();
+      formData.append('file', blob, `report-${reportId}.wid`);
+
+      this.http.post('http://localhost:8080/upload-wid-file', formData, { responseType: 'blob' }).subscribe(response => {
+        const url = window.URL.createObjectURL(response);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `report-${reportId}.xlsx`;
+        document.body.appendChild(a);
+        a.click();
+        window.URL.revokeObjectURL(url);
+      });
+    });
+  }
+}
+
+
+----------------------backend
+import org.springframework.stereotype.Service;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
+@Service
+public class WidFileService {
+    
+    public InputStream fetchWidFile(Long reportId) throws IOException {
+        // Mock implementation: Replace with actual API call to fetch the .wid file
+        Path path = Paths.get("path/to/report-" + reportId + ".wid");
+        return Files.newInputStream(path);
+    }
+}
+
+
+----------------------------
+import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.springframework.stereotype.Service;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.List;
+import java.util.Scanner;
+import java.util.stream.Collectors;
+
+@Service
+public class ExcelService {
+
+    public byte[] createExcel(InputStream widInputStream) throws IOException {
+        List<String> data;
+        try (Scanner scanner = new Scanner(widInputStream)) {
+            data = scanner.lines().collect(Collectors.toList());
+        }
+
+        try (Workbook workbook = new XSSFWorkbook(); ByteArrayOutputStream bos = new ByteArrayOutputStream()) {
+            Sheet sheet = workbook.createSheet("Data");
+            int rowCount = 0;
+            for (String line : data) {
+                Row row = sheet.createRow(rowCount++);
+                String[] values = line.split(","); // Assuming comma-separated values
+                int colCount = 0;
+                for (String value : values) {
+                    Cell cell = row.createCell(colCount++);
+                    cell.setCellValue(value);
+                }
+            }
+            workbook.write(bos);
+            return bos.toByteArray();
+        }
+    }
+}
+
+
+-------------------------------
+contrller
+
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+import java.io.InputStream;
+
+@RestController
+public class FileController {
+
+    @Autowired
+    private WidFileService widFileService;
+
+    @Autowired
+    private ExcelService excelService;
+
+    @GetMapping("/fetch-wid-file/{reportId}")
+    public ResponseEntity<byte[]> fetchWidFile(@RequestHeader("Authorization") String token,
+                                               @PathVariable Long reportId) throws IOException {
+        // Hard-coded token validation
+        if (!"hard-coded-token".equals(token)) {
+            return ResponseEntity.status(403).build();
+        }
+
+        // Fetch the .wid file
+        InputStream widInputStream = widFileService.fetchWidFile(reportId);
+
+        byte[] fileBytes = widInputStream.readAllBytes();
+
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=report-" + reportId + ".wid")
+                .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                .body(fileBytes);
+    }
+
+    @PostMapping("/upload-wid-file")
+    public ResponseEntity<byte[]> uploadWidFile(@RequestParam("file") MultipartFile file) throws IOException {
+        // Convert data to Excel
+        byte[] excelBytes;
+        try (InputStream widInputStream = file.getInputStream()) {
+            excelBytes = excelService.createExcel(widInputStream);
+        }
+
+        // Return the Excel file as a response
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+        headers.setContentDispositionFormData("attachment", file.getOriginalFilename().replace(".wid", ".xlsx"));
+
+        return ResponseEntity.ok()
+                .headers(headers)
+                .body(excelBytes);
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 import org.apache.poi.ss.usermodel.*;
