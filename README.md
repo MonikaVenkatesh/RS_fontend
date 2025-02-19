@@ -1,162 +1,101 @@
---------------------reportservice
-import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable } from 'rxjs';
 
-@Injectable({
-  providedIn: 'root'
-})
-export class ReportService {
-  private apiUrl = 'YOUR_API_ENDPOINT'; // Replace with your API endpoint
+package com.example.model;
 
-  constructor(private http: HttpClient) { }
+import javax.persistence.Entity;
+import javax.persistence.Id;
 
-  getReports(): Observable<any> {
-    const headers = new HttpHeaders({
-      'Authorization': 'Bearer YOUR_HARDCODED_TOKEN', // Replace with your token
-      'Content-Type': 'application/json'
-    });
+@Entity
+public class Employee {
 
-    return this.http.get<any>(this.apiUrl, { headers });
-  }
+    @Id
+    private Long id;
+    private String name;
 
-  fetchReport(reportId: string): Observable<Blob> {
-    const headers = new HttpHeaders({
-      'Authorization': 'Bearer YOUR_HARDCODED_TOKEN', // Replace with your token
-      'Content-Type': 'application/json'
-    });
-
-    return this.http.get(`${this.apiUrl}/report/${reportId}`, { headers, responseType: 'blob' });
-  }
-}
-----------------component
-import { Component, OnInit } from '@angular/core';
-import { ReportService } from './report.service';
-import { ColDef } from 'ag-grid-community';
-
-@Component({
-  selector: 'app-report-table',
-  template: `
-    <ag-grid-angular
-      style="width: 100%; height: 500px;"
-      class="ag-theme-alpine"
-      [rowData]="rowData"
-      [columnDefs]="columnDefs"
-      (gridReady)="onGridReady($event)">
-    </ag-grid-angular>
-  `,
-  styleUrls: ['./report-table.component.css']
-})
-export class ReportTableComponent implements OnInit {
-  rowData: any[] = [];
-  columnDefs: ColDef[] = [
-    { field: 'reportName', headerName: 'Report Name' },
-    {
-      field: 'download',
-      headerName: 'Download',
-      cellRenderer: (params) => {
-        return `<button (click)="fetchReport('${params.data.id}')">Download</button>`;
-      }
+    // Getters and setters
+    public Long getId() {
+        return id;
     }
-  ];
 
-  constructor(private reportService: ReportService) { }
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-  ngOnInit(): void {
-    this.reportService.getReports().subscribe(data => {
-      this.rowData = data.reports;
-    });
-  }
+    public String getName() {
+        return name;
+    }
 
-  fetchReport(reportId: string): void {
-    this.reportService.fetchReport(reportId).subscribe(response => {
-      const url = window.URL.createObjectURL(response);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `${reportId}.wid`;
-      a.click();
-      window.URL.revokeObjectURL(url);
-    });
-  }
-}
-
-
-------------------------controller
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-
-@RestController
-@RequestMapping("/api")
-public class ReportController {
-
-    @PostMapping("/convertToExcel")
-    public ResponseEntity<byte[]> convertToExcel(@RequestParam("file") MultipartFile file) {
-        try (InputStream inputStream = file.getInputStream();
-             ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
-
-            // Your logic to convert .wid to Excel goes here
-            // For example purposes, we're just copying input to output
-            byte[] buffer = new byte[1024];
-            int bytesRead;
-            while ((bytesRead = inputStream.read(buffer)) != -1) {
-                outputStream.write(buffer, 0, bytesRead);
-            }
-
-            HttpHeaders headers = new HttpHeaders();
-            headers.add("Content-Disposition", "attachment; filename=report.xlsx");
-            return new ResponseEntity<>(outputStream.toByteArray(), headers, HttpStatus.OK);
-        } catch (IOException e) {
-            e.printStackTrace();
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+    public void setName(String name) {
+        this.name = name;
     }
 }
 
 
 
---------------------file conersion
+package com.example.service;
 
+import com.example.repository.EmployeeRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.io.*;
-
 @Service
-public class FileConversionService {
+public class TestService {
+    
+    @Autowired
+    private EmployeeRepository employeeRepository;
 
-    public ByteArrayOutputStream convertWidToExcel(InputStream inputStream) throws IOException {
-        // Implement your .wid to Excel conversion logic here
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        byte[] buffer = new byte[1024];
-        int bytesRead;
-        while ((bytesRead = inputStream.read(buffer)) != -1) {
-            outputStream.write(buffer, 0, bytesRead);
-        }
-        return outputStream;
+    public void testConnection() {
+        // Test fetching from the database
+        System.out.println("Testing database connection: " + employeeRepository.findAll());
     }
 }
 
 
 
----------------------------application.properties
+
+package com.example;
+
+import org.springframework.boot.CommandLineRunner;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.Bean;
+
+@SpringBootApplication
+public class Application {
+    public static void main(String[] args) {
+        SpringApplication.run(Application.class, args);
+    }
+
+    @Bean
+    public CommandLineRunner run(TestService testService) {
+        return args -> testService.testConnection();
+    }
+}
 
 
-spring.servlet.multipart.enabled=true
-spring.servlet.multipart.max-file-size=10MB
-spring.servlet.multipart.max-request-size=10MB
+package com.example.config;
+
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.jdbc.datasource.DriverManagerDataSource;
+import javax.sql.DataSource;
+
+@Configuration
+public class DatabaseConfig {
+
+    @Bean
+    public DataSource dataSource() {
+        DriverManagerDataSource dataSource = new DriverManagerDataSource();
+        dataSource.setDriverClassName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
+        dataSource.setUrl("jdbc:sqlserver://localhost:1433;databaseName=mydb");
+        dataSource.setUsername("your_username");
+        dataSource.setPassword("your_password");
+        return dataSource;
+    }
+}
 
 
 
-
-
-
+____&&&&&&&&&&&
 
 
 
