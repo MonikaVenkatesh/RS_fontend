@@ -1,4 +1,9 @@
 
+spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.SQLServerDialect
+
+
+
+
 package com.example.model;
 
 import javax.persistence.Entity;
