@@ -1,3 +1,76 @@
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.File;
+import javax.xml.transform.*;
+import javax.xml.transform.sax.SAXResult;
+import javax.xml.transform.stream.StreamSource;
+
+import org.apache.fop.apps.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+public class FOPTransformer {
+    
+    private static final Logger logger = LoggerFactory.getLogger(FOPTransformer.class);
+    
+    private final int rendererType;
+    private final FopFactory fopFactory;
+
+    public FOPTransformer(int rendererType) throws FOPException {
+        this.rendererType = rendererType;
+        this.fopFactory = FopFactory.newInstance(new File(".").toURI());
+        logger.debug("Creating FOPTransformer with renderer type: {}", rendererType);
+    }
+
+    public void execute(InputStream in, OutputStream out) throws Exception {
+        logger.debug("Running FOP transformation...");
+        
+        try {
+            FOUserAgent foUserAgent = fopFactory.newFOUserAgent();
+            String outputFormat = getMimeType(rendererType);
+            
+            // Create FOP instance
+            Fop fop = fopFactory.newFop(outputFormat, foUserAgent, out);
+            TransformerFactory factory = TransformerFactory.newInstance();
+            Transformer transformer = factory.newTransformer();
+
+            Source src = new StreamSource(in);
+            Result res = new SAXResult(fop.getDefaultHandler());
+
+            transformer.transform(src, res);
+            
+            logger.debug("FOP transformation completed.");
+        } catch (Exception e) {
+            logger.error("Error in FOP transformation", e);
+            throw new Exception("FOPTransformer execution error", e);
+        }
+    }
+
+    private String getMimeType(int rendererType) {
+        switch (rendererType) {
+            case MimeConstants.MIME_PDF:
+                return MimeConstants.MIME_PDF;
+            case MimeConstants.MIME_PCL:
+                return MimeConstants.MIME_PCL;
+            case MimeConstants.MIME_POSTSCRIPT:
+                return MimeConstants.MIME_POSTSCRIPT;
+            case MimeConstants.MIME_SVG:
+                return MimeConstants.MIME_SVG;
+            case MimeConstants.MIME_RTF:
+                return MimeConstants.MIME_RTF;
+            case MimeConstants.MIME_XSL_FO:
+                return MimeConstants.MIME_XSL_FO;
+            default:
+                return MimeConstants.MIME_PDF;
+        }
+    }
+}
+
+
+
+
+
+
 
 spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.SQLServerDialect
 
