@@ -1,3 +1,58 @@
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.logging.Logger;
+import javax.xml.transform.TransformerException;
+import org.apache.poi.hssf.usermodel.HSSFSerializer;
+import org.xml.sax.InputSource;
+import org.xml.sax.XMLReader;
+import org.xml.sax.helpers.XMLReaderFactory;
+
+public class ExcelTransformer extends Transformer {
+
+    private static final Logger logger = Logger.getLogger(ExcelTransformer.class.getName());
+
+    public ExcelTransformer(int id, String detail) {
+        super(id, detail);
+    }
+
+    public ExcelTransformer(int id, String detail, String reportPage) {
+        super(id, detail, reportPage);
+    }
+
+    public void execute(InputStream in, OutputStream out, JobParameters jobParams, TaskParameters taskParams) throws TransformException {
+        try (OutputStream excelLogOut = TransformResultLogger.createOutputStream("-ExcelOutput.xls")) {
+            
+            OutputStream output = (excelLogOut != null) ? new TeeOutputStream(out, excelLogOut) : out;
+            
+            HSSFSerializer handler = new HSSFSerializer();
+            handler.initialize();
+            handler.setOutputStream(output);
+
+            XMLReader xr = XMLReaderFactory.createXMLReader();
+            xr.setContentHandler(handler);
+            xr.parse(new InputSource(in));
+
+        } catch (Exception e) {
+            logger.severe("execute(): error " + e.getMessage());
+            throw new TransformException("ExcelTransformer execute exception!", e);
+        }
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
