@@ -1,3 +1,86 @@
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
+import org.xml.sax.XMLReader;
+
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
+import java.io.*;
+
+import org.apache.log4j.Logger;
+
+public class ExcelTransformer extends Transformer {
+
+    private static final Logger logger = Logger.getLogger(ExcelTransformer.class);
+
+    public ExcelTransformer(int id, String detail) {
+        super(id, detail);
+    }
+
+    public ExcelTransformer(int id, String detail, String reportPage) {
+        super(id, detail, reportPage);
+    }
+
+    @Override
+    public void execute(InputStream in, OutputStream out, JobParameters jobParams, TaskParameters taskParams) throws TransformException {
+        OutputStream excelLogOut = null;
+
+        try {
+            excelLogOut = new FileOutputStream("ExcelOutput.xls");
+            OutputStream output = (excelLogOut != null) ? new TeeOutputStream(out, excelLogOut) : out;
+
+            // Using Apache POI to create an Excel Workbook
+            Workbook workbook = new HSSFWorkbook();
+            Sheet sheet = workbook.createSheet("Report Data");
+
+            // Example: Writing a sample row
+            sheet.createRow(0).createCell(0).setCellValue("Excel Generated via Apache POI");
+
+            workbook.write(output);
+            workbook.close();
+
+            // XML Parsing (if needed)
+            SAXParserFactory factory = SAXParserFactory.newInstance();
+            SAXParser saxParser = factory.newSAXParser();
+            XMLReader xmlReader = saxParser.getXMLReader();
+            xmlReader.setContentHandler(new MySaxHandler()); // Replace with an actual handler
+            xmlReader.parse(new InputSource(in));
+
+        } catch (Exception e) {
+            logger.fatal("execute(String): error", e);
+            throw new TransformException("ExcelTransformer execute exception!", e);
+        } finally {
+            try {
+                if (excelLogOut != null) {
+                    excelLogOut.close();
+                }
+            } catch (IOException e) {
+                logger.fatal("execute(String): cleanup error", e);
+                throw new TransformException("ExcelTransformer execute cleanup exception!", e);
+            }
+        }
+    }
+
+    // Sample SAX Handler (Replace with an actual implementation)
+    private static class MySaxHandler extends org.xml.sax.helpers.DefaultHandler {
+        // Implement XML parsing logic here if needed
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
 package com.barcap.intellimatchdashboard.reportdefinition.sstemplates;
 
 import org.apache.poi.ss.usermodel.Workbook;
