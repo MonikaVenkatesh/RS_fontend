@@ -1,6 +1,81 @@
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.logging.Logger;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Cell;
+import org.xml.sax.InputSource;
+import org.xml.sax.XMLReader;
+import org.xml.sax.helpers.DefaultHandler;
+import org.apache.xerces.parsers.SAXParser;
+
+public class ExcelTransformer extends Transformer {
+
+    private static final Logger logger = Logger.getLogger(ExcelTransformer.class.getName());
+
+    public ExcelTransformer(int id, String detail) {
+        super(id, detail);
+    }
+
+    public ExcelTransformer(int id, String detail, String reportPage) {
+        super(id, detail, reportPage);
+    }
+
+    public void execute(InputStream in, OutputStream out, JobParameters jobParams, TaskParameters taskParams)
+            throws TransformException {
+
+        try (Workbook workbook = new HSSFWorkbook(); OutputStream excelLogout = TransformResultLogger.createOutputStream("-ExcelOutput.xls")) {
+
+            OutputStream output = (excelLogout != null) ? new TeeOutputStream(out, excelLogout) : out;
+
+            Sheet sheet = workbook.createSheet("Report");
+            XMLReader xr = new SAXParser();
+            xr.setContentHandler(new ExcelContentHandler(sheet));
+            xr.parse(new InputSource(in));
+
+            workbook.write(output);
+            
+        } catch (Exception e) {
+            logger.severe("Error executing Excel transformation: " + e.getMessage());
+            throw new TransformException("ExcelTransformer execute exception!", e);
+        }
+    }
+
+    private static class ExcelContentHandler extends DefaultHandler {
+        private final Sheet sheet;
+        private int rowNum = 0;
+
+        public ExcelContentHandler(Sheet sheet) {
+            this.sheet = sheet;
+        }
+
+        @Override
+        public void startElement(String uri, String localName, String qName, org.xml.sax.Attributes attributes) {
+            Row row = sheet.createRow(rowNum++);
+            Cell cell = row.createCell(0);
+            cell.setCellValue(qName);
+        }
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.logging.Logger;
 import javax.xml.transform.TransformerException;
 import org.apache.poi.hssf.usermodel.HSSFSerializer;
 import org.xml.sax.InputSource;
