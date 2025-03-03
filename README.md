@@ -1,4 +1,68 @@
-import java.io.InputStream;
+package com.barcap.intellimatchdashboard.reportdefinition.sstemplates;
+
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.jxls.common.Context;
+import org.jxls.util.JxlsHelper;
+
+import java.io.*;
+import java.util.Map;
+import org.apache.log4j.Logger;
+
+public class DashboardSsTemplateProcessor {
+    
+    private static final Logger logger = Logger.getLogger(DashboardSsTemplateProcessor.class);
+
+    // Singleton Instance
+    private static DashboardSsTemplateProcessor instance;
+
+    public static DashboardSsTemplateProcessor getInstance() {
+        if (instance == null) {
+            instance = new DashboardSsTemplateProcessor();
+        }
+        return instance;
+    }
+
+    private DashboardSsTemplateProcessor() {
+        // Constructor can be used for any initialization
+    }
+
+    /**
+     * Processes an Excel template and returns a Workbook.
+     */
+    public Workbook process(File templateFile, Map<String, Object> contextData) throws IOException {
+        try (InputStream is = new FileInputStream(templateFile);
+             ByteArrayOutputStream os = new ByteArrayOutputStream()) {
+             
+            Context context = new Context(contextData);
+            JxlsHelper.getInstance().processTemplate(is, os, context);
+            
+            try (InputStream workbookInput = new ByteArrayInputStream(os.toByteArray())) {
+                return new XSSFWorkbook(workbookInput);
+            }
+        } catch (IOException e) {
+            logger.error("Error processing Excel template", e);
+            throw new IOException("Error processing Excel template", e);
+        }
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+mport java.io.InputStream;
 import java.io.OutputStream;
 import java.io.File;
 import javax.xml.transform.*;
